@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using WebMVCHelp.DAL.Contracts;
@@ -74,6 +75,24 @@ namespace WebMVCHelp.DAL
         public bool Remove(Credit Model)
         {
             return Remove(Model.CreditId);
+        }
+
+        public Credit Find(params object[] Keys)
+        {
+            Credit credit = null;
+
+            using (SqlCommand command = Connection.CreateCommand())
+            {
+                command.CommandText = "SELECT CreditId, Description FROM Credit WHERE Id=@Id";
+                command.CommandType = CommandType.Text;
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = Keys[0];
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    credit = new Credit(reader.GetInt32(0), reader.GetString(1));
+                }
+            }
+
+            return credit;
         }
     }
 }

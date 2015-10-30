@@ -14,5 +14,6 @@ namespace WebMVCHelp.DAL.Contracts
         bool Remove(T Model);
         bool Remove(params object[] Keys);
         IEnumerator<T> All();
+        T Find(params object[] Keys);
     }
 }
