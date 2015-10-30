@@ -256,6 +256,19 @@
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebMVCHelp.DAL\WebMVCHelp.DAL.csproj">
+      <Project>{c1a07987-6c9a-40d2-8497-4671d73d235e}</Project>
+      <Name>WebMVCHelp.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebMVCHelp.Models\WebMVCHelp.Models.csproj">
+      <Project>{32d12d53-07bc-4eea-a6b2-251016d39c95}</Project>
+      <Name>WebMVCHelp.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
