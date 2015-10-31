@@ -26,7 +26,7 @@ namespace WebMVCHelp.DAL
             return Model;
         }
 
-        public IEnumerator<Credit> All()
+        public IEnumerable<Credit> All()
         {
             using (SqlCommand command = Connection.CreateCommand())
             {
@@ -34,7 +34,10 @@ namespace WebMVCHelp.DAL
                 command.CommandType = CommandType.Text;
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    yield return new Credit(reader.GetInt32(0), reader.GetString(1));
+                    while (reader.Read())
+                    {
+                        yield return new Credit(reader.GetInt32(0), reader.GetString(1));
+                    }
                 }
             }
         }
@@ -45,10 +48,10 @@ namespace WebMVCHelp.DAL
 
             using (SqlCommand command = Connection.CreateCommand())
             {
-                command.CommandText = "UPDATE Credit SET Description=@Description WHERE Id=@Id";
+                command.CommandText = "UPDATE Credit SET Description=@Description WHERE CreditId=@CreditId";
                 command.CommandType = CommandType.Text;
                 command.Parameters.Add("@Description", SqlDbType.VarChar, 50).Value = Model.Description;
-                command.Parameters.Add("@Id", SqlDbType.Int).Value = Model.CreditId;
+                command.Parameters.Add("@CreditId", SqlDbType.Int).Value = Model.CreditId;
                 _return = (command.ExecuteNonQuery() > 0);
             }
 
@@ -62,9 +65,9 @@ namespace WebMVCHelp.DAL
 
             using (SqlCommand command = Connection.CreateCommand())
             {
-                command.CommandText = "DELETE FROM Credit WHERE Id=@Id";
+                command.CommandText = "DELETE FROM Credit WHERE CreditId=@CreditId";
                 command.CommandType = CommandType.Text;                
-                command.Parameters.Add("@Id", SqlDbType.Int).Value = Keys[0];
+                command.Parameters.Add("@CreditId", SqlDbType.Int).Value = Keys[0];
                 _return = (command.ExecuteNonQuery() > 0);
             }
             
@@ -83,11 +86,12 @@ namespace WebMVCHelp.DAL
 
             using (SqlCommand command = Connection.CreateCommand())
             {
-                command.CommandText = "SELECT CreditId, Description FROM Credit WHERE Id=@Id";
+                command.CommandText = "SELECT CreditId, Description FROM Credit WHERE CreditId=@CreditId";
                 command.CommandType = CommandType.Text;
-                command.Parameters.Add("@Id", SqlDbType.Int).Value = Keys[0];
+                command.Parameters.Add("@CreditId", SqlDbType.Int).Value = Keys[0];
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
+                    reader.Read();
                     credit = new Credit(reader.GetInt32(0), reader.GetString(1));
                 }
             }

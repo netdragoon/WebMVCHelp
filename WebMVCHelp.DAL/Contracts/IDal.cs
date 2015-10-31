@@ -13,7 +13,7 @@ namespace WebMVCHelp.DAL.Contracts
         bool Edit(T Model);
         bool Remove(T Model);
         bool Remove(params object[] Keys);
-        IEnumerator<T> All();
+        IEnumerable<T> All();
         T Find(params object[] Keys);
     }
 }
