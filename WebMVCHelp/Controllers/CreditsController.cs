@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using WebMVCHelp.DAL.Interfaces;
 using WebMVCHelp.Models;
 
@@ -15,9 +11,9 @@ namespace WebMVCHelp.Controllers
         {
             this.DalCredit = DalCredit;
         }
-        public ActionResult Index()
+        public ActionResult Index(int? Page)
         {
-            return View(DalCredit.All());
+            return View(DalCredit.All(Page ?? 1, 10));
         }
 
         // GET: Credits/Details/5
@@ -38,6 +34,10 @@ namespace WebMVCHelp.Controllers
         {
             try
             {
+                if (ModelState.IsValid == false)
+                {
+                    return View();
+                }
                 DalCredit.Add(credit);
                 return RedirectToAction("Index");
             }
@@ -59,7 +59,10 @@ namespace WebMVCHelp.Controllers
         {
             try
             {
-                
+                if (ModelState.IsValid == false)
+                {
+                    return View();
+                }
                 DalCredit.Edit(credit);
                 return RedirectToAction("Index");
             }

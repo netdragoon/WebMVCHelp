@@ -15,5 +15,6 @@ namespace WebMVCHelp.DAL.Contracts
         bool Remove(params object[] Keys);
         IEnumerable<T> All();
         T Find(params object[] Keys);
+        PagedList.IPagedList<T> All(int Page, int Total = 10);
     }
 }

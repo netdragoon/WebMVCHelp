@@ -1,4 +1,6 @@
-﻿namespace WebMVCHelp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebMVCHelp.Models
 {
     public class Credit
     {
@@ -18,6 +20,9 @@
             this.Description = Description;
         }
         public int CreditId { get; set; }
+
+        [Required()]
+        [MaxLength(50)]
         public string Description { get; set; }
     }
 }

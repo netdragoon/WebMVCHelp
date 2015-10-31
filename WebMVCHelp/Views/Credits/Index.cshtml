@@ -1,5 +1,5 @@
-﻿@model IEnumerable<WebMVCHelp.Models.Credit>
-
+﻿@model PagedList.IPagedList<WebMVCHelp.Models.Credit>
+@using PagedList.Mvc
 @{
     ViewBag.Title = "Index";
 }
@@ -12,22 +12,29 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            Descrição
         </th>
         <th></th>
     </tr>
-
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.CreditId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.CreditId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.CreditId })
+            </td>
+        </tr>
+    }
+    @if (Model.HasNextPage || Model.HasPreviousPage)
+    {
     <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.CreditId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.CreditId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.CreditId })
-        </td>
+        <td colspan="2" style="text-align:center">
+           @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }))
+        </td>        
     </tr>
-}
-
+    }
 </table>

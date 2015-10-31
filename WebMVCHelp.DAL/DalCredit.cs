@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using PagedList;
 using WebMVCHelp.DAL.Contracts;
 using WebMVCHelp.Models;
 
@@ -98,5 +99,45 @@ namespace WebMVCHelp.DAL
 
             return credit;
         }
+
+        public IPagedList<Credit> All(int Page, int Total = 10)
+        {
+            IList<Credit> Credits = new List<Credit>();
+            int TotaItems = 0;
+            using (SqlCommand command = Connection.CreateCommand())
+            {
+                string SQL = "SELECT* FROM( ";
+                SQL += "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS NUMBER,CreditId, Description FROM Credit ";
+                SQL += ") as TBL ";
+                SQL += "WHERE NUMBER BETWEEN((@Page - 1) * @Total + 1) AND(@Page* @Total) ";
+                SQL += "ORDER BY Description ";
+                command.CommandText = SQL;
+                command.CommandType = CommandType.Text;
+                command.Parameters.Add("@Page", SqlDbType.Int).Value = Page;
+                command.Parameters.Add("@Total", SqlDbType.Int).Value = Total;
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Credits.Add(new Credit(reader.GetInt32(1), reader.GetString(2)));
+                    }
+                }
+
+                command.Parameters.Clear();
+                command.CommandText = "SELECT Count(*) Rows FROM Credit";
+                TotaItems = int.Parse(command.ExecuteScalar().ToString());
+            }
+            return new StaticPagedList<Credit>(Credits, Page, Total, TotaItems);
+        }
     }
 }
+//DECLARE @PageNumber AS INT, @RowspPage AS INT
+//SET @PageNumber = 2
+//SET @RowspPage = 5
+//SELECT* FROM(
+//             SELECT ROW_NUMBER() OVER(ORDER BY ID_EXAMPLE) AS NUMBER,
+//                    ID_EXAMPLE, NM_EXAMPLE, DT_CREATE FROM TB_EXAMPLE
+//               ) AS TBL
+//WHERE NUMBER BETWEEN((@PageNumber - 1) * @RowspPage + 1) AND(@PageNumber* @RowspPage)
+//ORDER BY ID_EXAMPLE
