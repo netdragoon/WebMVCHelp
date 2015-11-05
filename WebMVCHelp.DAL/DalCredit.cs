@@ -102,19 +102,32 @@ namespace WebMVCHelp.DAL
 
         public IPagedList<Credit> All(int Page, int Total = 10)
         {
+            return All(null, Page, Total);
+        }
+
+        public IPagedList<Credit> All(string filtro, int Page, int Total = 10)
+        {            
             IList<Credit> Credits = new List<Credit>();
             int TotaItems = 0;
             using (SqlCommand command = Connection.CreateCommand())
             {
                 string SQL = "SELECT* FROM( ";
                 SQL += "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS NUMBER,CreditId, Description FROM Credit ";
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    SQL += "WHERE Description LIKE @Filtro ";
+                }
                 SQL += ") as TBL ";
-                SQL += "WHERE NUMBER BETWEEN((@Page - 1) * @Total + 1) AND(@Page* @Total) ";
+                SQL += "WHERE NUMBER BETWEEN((@Page - 1) * @Total + 1) AND (@Page * @Total) ";                
                 SQL += "ORDER BY Description ";
                 command.CommandText = SQL;
                 command.CommandType = CommandType.Text;
                 command.Parameters.Add("@Page", SqlDbType.Int).Value = Page;
                 command.Parameters.Add("@Total", SqlDbType.Int).Value = Total;
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    command.Parameters.Add("@Filtro", SqlDbType.VarChar).Value = string.Format("%{0}%", filtro);
+                }
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -123,9 +136,18 @@ namespace WebMVCHelp.DAL
                         Credits.Add(new Credit(reader.GetInt32(1), reader.GetString(2)));
                     }
                 }
-
-                command.Parameters.Clear();
-                command.CommandText = "SELECT Count(*) Rows FROM Credit";
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    command.Parameters.RemoveAt("@Page");
+                    command.Parameters.RemoveAt("@Total");
+                }
+                else
+                {
+                    command.Parameters.Clear();
+                }
+                command.CommandText = string.IsNullOrEmpty(filtro) ?
+                    "SELECT Count(*) Rows FROM Credit" :
+                    "SELECT Count(*) Rows FROM Credit WHERE Description LIKE @Filtro";
                 TotaItems = int.Parse(command.ExecuteScalar().ToString());
             }
             return new StaticPagedList<Credit>(Credits, Page, Total, TotaItems);

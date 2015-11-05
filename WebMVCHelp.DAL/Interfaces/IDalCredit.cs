@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace WebMVCHelp.DAL.Interfaces
 {
     public interface IDalCredit: Contracts.IDal<Credit>
     {
+        IPagedList<Credit> All(string filtro, int Page, int Total = 10);
     }
 }

@@ -65,7 +65,7 @@ namespace WebMVCHelp.App_Start
         private static void RegisterServices(IKernel kernel)
         {
 
-            kernel.Bind<IConnection>().To<Connection>();
+            kernel.Bind<IConnection>().To<Connection>().InSingletonScope();
 
             kernel.Bind<IDalCredit>().To<DalCredit>();
 

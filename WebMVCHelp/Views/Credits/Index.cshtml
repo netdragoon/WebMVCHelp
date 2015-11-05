@@ -9,32 +9,52 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            Descrição
-        </th>
-        <th></th>
-    </tr>
-    @foreach (var item in Model)
-    {
+<div class="container">
+    <form id="form1" name="form1" method="get">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="Filtro" name="Filtro" value="@ViewBag.Filtro" placeholder="Digite a descrição ...">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                </div>
+            </div>
+        </div>
+</form>
+    <br />
+    <br />
+    <table class="table table-condensed table-hover table-striped">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.CreditId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.CreditId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CreditId })
-            </td>
+            <th>
+                Descrição
+            </th>
+            <th style="width:25%;text-align:center">...</th>
         </tr>
-    }
-    @if (Model.HasNextPage || Model.HasPreviousPage)
-    {
-    <tr>
-        <td colspan="2" style="text-align:center">
-           @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }))
-        </td>        
-    </tr>
-    }
-</table>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td style="width:25%;text-align:center">
+                    @Html.ActionLink("Alterar", "Edit", new { id = item.CreditId }, new { @class = "btn btn-success" })
+                    @Html.ActionLink("Ver", "Details", new { id = item.CreditId }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Excluir", "Delete", new { id = item.CreditId }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+        }
+        @if (Model.HasNextPage || Model.HasPreviousPage)
+        {
+            <tr>
+                <td colspan="2" style="text-align:center">
+                    @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page, Filtro = ViewBag.Filtro }))
+                </td>
+            </tr>
+        }
+    </table>
+</div>

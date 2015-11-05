@@ -11,9 +11,12 @@ namespace WebMVCHelp.Controllers
         {
             this.DalCredit = DalCredit;
         }
-        public ActionResult Index(int? Page)
+        public ActionResult Index(int? Page, string Filtro)
         {
-            return View(DalCredit.All(Page ?? 1, 10));
+            ViewBag.Filtro = Filtro;
+
+            return View(DalCredit.All(Filtro, Page ?? 1, 10));
+
         }
 
         // GET: Credits/Details/5
