@@ -38,3 +38,9 @@
 <p>
     @Html.DropDownList("Drop3", new SelectList((IEnumerable<WebMVCHelp.Models.Credit>)ViewBag.Drop3, "CreditId", "Description"))
 </p>
+@using (Html.BeginForm("PostItems", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{    
+    <input type="file" name="file" id="file" />
+    <button type="submit">Enviar</button>
+}
+

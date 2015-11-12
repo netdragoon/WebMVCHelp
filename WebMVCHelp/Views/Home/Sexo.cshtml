@@ -1,0 +1,45 @@
+﻿@model WebMVCHelp.Models.Peoples
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sexo</title>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.HiddenFor(x => x.Id)
+        <div>
+            @Html.Label("Nome Completo:")
+            @Html.TextBoxFor(x => x.Name)
+        </div>
+        <div> 
+            @Html.Label("Sexo:")
+            <select id="SexoId" name="SexoId"></select>
+        </div>
+        <button type="submit">Salvar</button>
+    }
+    <script>
+        $(document).ready(function () {
+            $.post("@Url.Action("GetSexo")", {}).done(function (data) {
+                if (data)
+                {
+                    var html = '';
+                    $.each(data, function (index, obj) {
+                        html = html + '<option value="' + obj.Id + '">' + obj.Description + '</option>';
+                    });
+                    $("#SexoId")
+                        .empty()
+                        .html(html);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
