@@ -29,7 +29,7 @@ namespace WebMVCHelp.DAL
             if (_con == null || _con.State == System.Data.ConnectionState.Closed)
             {
                 Open();
-            }
+            }            
             return _con.CreateCommand();
         }
 
@@ -55,6 +55,19 @@ namespace WebMVCHelp.DAL
         SqlConnection IConnection.Connection()
         {
             return Open();
+        }
+
+        public async Task<SqlConnection> OpenAsync()
+        {
+            if (_con == null)
+            {
+                _con = new SqlConnection(StrConn);
+            }
+            if (_con.State == System.Data.ConnectionState.Closed)
+            {
+                await _con.OpenAsync();
+            }
+            return _con;
         }
     }
 }
