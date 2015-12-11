@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebMVCHelp.DAL.Contracts
@@ -15,6 +12,7 @@ namespace WebMVCHelp.DAL.Contracts
         bool Remove(params object[] Keys);
         IEnumerable<T> All();
         T Find(params object[] Keys);
+        Task<T> FindAsync(params object[] Keys);
         PagedList.IPagedList<T> All(int Page, int Total = 10);
     }
 }

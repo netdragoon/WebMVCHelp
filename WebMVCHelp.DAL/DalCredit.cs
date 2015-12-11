@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using PagedList;
 using WebMVCHelp.DAL.Contracts;
 using WebMVCHelp.Models;
@@ -99,7 +100,24 @@ namespace WebMVCHelp.DAL
 
             return credit;
         }
+        public async Task<Credit> FindAsync(params object[] Keys)
+        {
+            Credit credit = null;
 
+            using (SqlCommand command = Connection.CreateCommand())
+            {
+                command.CommandText = "SELECT CreditId, Description FROM Credit WHERE CreditId=@CreditId";
+                command.CommandType = CommandType.Text;
+                command.Parameters.Add("@CreditId", SqlDbType.Int).Value = Keys[0];
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    await reader.ReadAsync();
+                    credit = new Credit(reader.GetInt32(0), reader.GetString(1));
+                }
+            }
+
+            return credit;
+        }
         public IPagedList<Credit> All(int Page, int Total = 10)
         {
             return All(null, Page, Total);
@@ -152,6 +170,8 @@ namespace WebMVCHelp.DAL
             }
             return new StaticPagedList<Credit>(Credits, Page, Total, TotaItems);
         }
+
+        
     }
 }
 //DECLARE @PageNumber AS INT, @RowspPage AS INT
