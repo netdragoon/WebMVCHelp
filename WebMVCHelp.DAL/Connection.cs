@@ -43,7 +43,10 @@ namespace WebMVCHelp.DAL
         {
             if (_con == null)
             {
-                _con = new SqlConnection(StrConn);
+                _con = new SqlConnection(StrConn);                
+            }
+            if (_con.State == System.Data.ConnectionState.Closed)
+            {
                 _con.Open();
             }
             return _con;
